@@ -5,9 +5,9 @@ import enumeratum.{Enum, EnumEntry}
 import monocle.Prism
 import org.broadinstitute.dsde.workbench.google2.{MachineTypeName, OperationName, RegionName, ZoneName}
 import org.broadinstitute.dsde.workbench.leonardo.RuntimeContainerServiceType.JupyterService
-import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{BootSource, Jupyter, RStudio, Welder}
+import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{BootSource, Jupyter, JupyterLab, RStudio, Welder}
 import org.broadinstitute.dsde.workbench.leonardo.SamResourceId._
-import org.broadinstitute.dsde.workbench.model.google.{parseGcsPath, GcsBucketName, GcsPath, GoogleProject}
+import org.broadinstitute.dsde.workbench.model.google.{GcsBucketName, GcsPath, GoogleProject, parseGcsPath}
 import org.broadinstitute.dsde.workbench.model.{IP, TraceId, ValueObject, WorkbenchEmail}
 import org.http4s.Uri
 
@@ -352,6 +352,7 @@ object RuntimeImageType extends Enum[RuntimeImageType] {
   val values = findValues
 
   case object Jupyter extends RuntimeImageType
+  case object JupyterLab extends RuntimeImageType
   case object RStudio extends RuntimeImageType
   case object Welder extends RuntimeImageType
   case object Listener extends RuntimeImageType
@@ -378,6 +379,10 @@ object RuntimeContainerServiceType extends Enum[RuntimeContainerServiceType] {
   case object JupyterService extends RuntimeContainerServiceType {
     override def imageType: RuntimeImageType = Jupyter
     override def proxySegment: String = "jupyter"
+  }
+  case object JupyterLabService extends RuntimeContainerServiceType {
+    override def imageType: RuntimeImageType = JupyterLab
+    override def proxySegment: String = "jupyter/lab"
   }
   case object RStudioService extends RuntimeContainerServiceType {
     override def imageType: RuntimeImageType = RStudio

@@ -6,7 +6,7 @@ import cats.mtl.Ask
 import cats.syntax.all._
 import io.circe.{Decoder, DecodingFailure}
 import org.broadinstitute.dsde.workbench.leonardo.ContainerRegistry._
-import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{Jupyter, RStudio}
+import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{Jupyter, JupyterLab, RStudio}
 import org.broadinstitute.dsde.workbench.leonardo.dao.HttpDockerDAO._
 import org.broadinstitute.dsde.workbench.leonardo.dao.ImageVersion.{Sha, Tag}
 import org.broadinstitute.dsde.workbench.leonardo.model.{InvalidImage, LeoException}
@@ -72,7 +72,13 @@ class HttpDockerDAO[F[_]] private (httpClient: Client[F])(implicit logger: Logge
         .find { case (_, env_var) =>
           envSet.exists(_.key == env_var)
         }
-        .map(_._1)
+        .map { case (image_type, _) =>
+          //JupyterLab is a special case right now because it has a special env var declared.
+          //This is because Jupyter and JupyterLab share the same home path, so we need
+          //a different wau to differentiate the two
+          if((image_type == Jupyter) && envSet.exists(_.key == "IS_JUPYTER_LAB")) JupyterLab
+          else image_type
+        }
       homeDirectory = envSet.collectFirst { case env if env.key == "HOME" => Paths.get(env.value) }
       res <- F.fromEither(tool.toRight(InvalidImage(traceId, image, None)))
     } yield RuntimeImage(res, image.imageUrl, homeDirectory, now)
