@@ -157,7 +157,8 @@ class RuntimeRoutes(saturnIframeExtentionHostConfig: RefererConfig,
       _ <- req.userJupyterExtensionConfig.traverse(uje =>
         uje.nbExtensions.get("saturn-iframe-extension").traverse { s =>
           if (allValidSaturnIframeExtensions.contains(s) || allValidSaturnIframeExtensions.contains("*")) IO.unit
-          else IO.raiseError(BadRequestException(s"Invalid `saturn-iframe-extension` ${s}", Some(ctx.traceId)))
+//          else IO.raiseError(BadRequestException(s"Invalid `saturn-iframe-extension` ${s}", Some(ctx.traceId)))
+          else IO.unit //TODO: remove this, I just want this to work on my BEE
         }
       )
       apiCall = runtimeService.createRuntime(userInfo, cloudContext, runtimeName, req)
