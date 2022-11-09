@@ -18,11 +18,11 @@ object ToolDAO {
       clusterTool match {
         case JupyterService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
-            F.pure(true)
+            jupyterDAO.isProxyAvailable(cloudContext, runtimeName)
         // todo: can this just use the existing JupyterDAO instead of defining it's own?
         case JupyterLabService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
-            jupyterDAO.isProxyAvailable(cloudContext, runtimeName)
+            F.pure(true)
         case WelderService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
             welderDAO.isProxyAvailable(cloudContext, runtimeName)
