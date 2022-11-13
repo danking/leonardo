@@ -2,7 +2,7 @@ package org.broadinstitute.dsde.workbench.leonardo.util
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Instant, ZoneId}
-import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{CryptoDetector, Jupyter, Proxy, RStudio, Welder}
+import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{CryptoDetector, Jupyter, JupyterLab, Proxy, RStudio, Welder}
 import org.broadinstitute.dsde.workbench.leonardo.WelderAction._
 import org.broadinstitute.dsde.workbench.leonardo._
 import org.broadinstitute.dsde.workbench.leonardo.config._
@@ -198,7 +198,7 @@ object RuntimeTemplateValues {
   ): RuntimeTemplateValues = {
     val jupyterUserhome =
       config.runtimeImages
-        .find(_.imageType == Jupyter)
+        .find(x => x.imageType == Jupyter || x.imageType == JupyterLab)
         .flatMap(_.homeDirectory.map(_.toString))
         .getOrElse("/home/jupyter")
     RuntimeTemplateValues(
