@@ -73,10 +73,10 @@ class HttpDockerDAO[F[_]] private (httpClient: Client[F])(implicit logger: Logge
           envSet.exists(_.key == env_var)
         }
         .map { case (image_type, _) =>
-          //JupyterLab is a special case right now because it has a special env var declared.
-          //This is because Jupyter and JupyterLab share the same home path, so we need
-          //a different wau to differentiate the two
-          if((image_type == Jupyter) && envSet.exists(_.key == "IS_JUPYTER_LAB")) JupyterLab
+          // JupyterLab is a special case right now because it has a special env var declared.
+          // This is because Jupyter and JupyterLab share the same home path, so we need
+          // a different wau to differentiate the two
+          if ((image_type == Jupyter) && envSet.exists(_.key == "IS_JUPYTER_LAB")) JupyterLab
           else image_type
         }
       homeDirectory = envSet.collectFirst { case env if env.key == "HOME" => Paths.get(env.value) }

@@ -2,7 +2,14 @@ package org.broadinstitute.dsde.workbench.leonardo.util
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Instant, ZoneId}
-import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{CryptoDetector, Jupyter, JupyterLab, Proxy, RStudio, Welder}
+import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{
+  CryptoDetector,
+  Jupyter,
+  JupyterLab,
+  Proxy,
+  RStudio,
+  Welder
+}
 import org.broadinstitute.dsde.workbench.leonardo.WelderAction._
 import org.broadinstitute.dsde.workbench.leonardo._
 import org.broadinstitute.dsde.workbench.leonardo.config._
@@ -16,6 +23,7 @@ case class RuntimeTemplateValues private (googleProject: String,
                                           initBucketName: String,
                                           stagingBucketName: String,
                                           jupyterDockerImage: String,
+                                          jupyterLabDockerImage: String,
                                           rstudioDockerImage: String,
                                           proxyDockerImage: String,
                                           welderDockerImage: String,
@@ -24,6 +32,7 @@ case class RuntimeTemplateValues private (googleProject: String,
                                           proxyServerKey: String,
                                           rootCaPem: String,
                                           jupyterDockerCompose: String,
+                                          jupyterLabDockerCompose: String,
                                           gpuDockerCompose: String,
                                           rstudioDockerCompose: String,
                                           proxyDockerCompose: String,
@@ -208,6 +217,7 @@ object RuntimeTemplateValues {
       config.initBucketName.map(_.value).getOrElse(""),
       config.stagingBucketName.map(_.value).getOrElse(""),
       config.runtimeImages.find(_.imageType == Jupyter).map(_.imageUrl).getOrElse(""),
+      config.runtimeImages.find(_.imageType == JupyterLab).map(_.imageUrl).getOrElse(""),
       config.runtimeImages.find(_.imageType == RStudio).map(_.imageUrl).getOrElse(""),
       config.runtimeImages.find(_.imageType == Proxy).map(_.imageUrl).getOrElse(""),
       config.runtimeImages.find(_.imageType == Welder).map(_.imageUrl).getOrElse(""),
@@ -223,6 +233,9 @@ object RuntimeTemplateValues {
         .getOrElse(""),
       config.initBucketName
         .map(n => GcsPath(n, GcsObjectName(config.clusterResourcesConfig.jupyterDockerCompose.asString)).toUri)
+        .getOrElse(""),
+      config.initBucketName
+        .map(n => GcsPath(n, GcsObjectName(config.clusterResourcesConfig.jupyterLabDockerCompose.asString)).toUri)
         .getOrElse(""),
       config.initBucketName
         .flatMap(n =>
@@ -251,7 +264,7 @@ object RuntimeTemplateValues {
       config.startUserScriptUri.map(_.asString).getOrElse(""),
       config.stagingBucketName
         .map(n => userStartScriptOutputUriPath(n, now.getOrElse(Instant.now)).toUri)
-        .getOrElse(""), // TODO: remove this complication
+        .getOrElse(""),
       (for {
         _ <- config.serviceAccountKey
         n <- config.initBucketName
