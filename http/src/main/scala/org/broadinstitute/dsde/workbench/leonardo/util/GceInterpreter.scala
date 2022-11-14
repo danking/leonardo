@@ -330,7 +330,11 @@ class GceInterpreter[F[_]](
           BootSource.VmImage(config.gceConfig.sourceImage)
         )
       )
-    } yield res
+    } yield {
+      println(templateParams)
+      println(templateValues)
+      res
+    }
 
   override protected def stopGoogleRuntime(params: StopGoogleRuntime)(implicit
     ev: Ask[F, AppContext]
