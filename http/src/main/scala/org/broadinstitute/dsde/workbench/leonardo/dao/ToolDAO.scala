@@ -1,6 +1,5 @@
 package org.broadinstitute.dsde.workbench.leonardo.dao
 
-import cats.effect.Async
 import org.broadinstitute.dsde.workbench.leonardo.RuntimeContainerServiceType.{JupyterLabService, JupyterService, RStudioService, WelderService}
 import org.broadinstitute.dsde.workbench.leonardo.{CloudContext, RuntimeContainerServiceType, RuntimeName}
 
@@ -13,7 +12,7 @@ object ToolDAO {
     jupyterDAO: JupyterDAO[F],
     welderDAO: WelderDAO[F],
     rstudioDAO: RStudioDAO[F]
-  )(implicit F: Async[F]): RuntimeContainerServiceType => ToolDAO[F, RuntimeContainerServiceType] =
+  ): RuntimeContainerServiceType => ToolDAO[F, RuntimeContainerServiceType] =
     clusterTool =>
       clusterTool match {
         case JupyterService =>
@@ -22,7 +21,7 @@ object ToolDAO {
         // todo: can this just use the existing JupyterDAO instead of defining it's own?
         case JupyterLabService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
-            F.pure(true)
+            jupyterDAO.isProxyAvailable(cloudContext, runtimeName)
         case WelderService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
             welderDAO.isProxyAvailable(cloudContext, runtimeName)

@@ -93,6 +93,7 @@ export OWNER_EMAIL=$(loginHint)
 export PET_SA_EMAIL=$(petSaEmail)
 export JUPYTER_SERVER_NAME=$(jupyterServerName)
 export JUPYTER_DOCKER_IMAGE=$(jupyterDockerImage)
+export JUPYTER_LAB_DOCKER_IMAGE=$(jupyterLabDockerImage)
 export WELDER_SERVER_NAME=$(welderServerName)
 export WELDER_DOCKER_IMAGE=$(welderDockerImage)
 export RSTUDIO_SERVER_NAME=$(rstudioServerName)
@@ -120,6 +121,7 @@ SERVER_CRT=$(proxyServerCrt)
 SERVER_KEY=$(proxyServerKey)
 ROOT_CA=$(rootCaPem)
 JUPYTER_DOCKER_COMPOSE_GCE=$(jupyterDockerCompose)
+JUPYTER_LAB_DOCKER_COMPOSE_GCE=$(jupyterLabDockerCompose)
 RSTUDIO_DOCKER_COMPOSE=$(rstudioDockerCompose)
 PROXY_DOCKER_COMPOSE=$(proxyDockerCompose)
 WELDER_DOCKER_COMPOSE=$(welderDockerCompose)
@@ -148,7 +150,7 @@ else
   export IS_RSTUDIO_RUNTIME="false"
 fi
 
-if grep -qF "gcr.io" <<< "${JUPYTER_DOCKER_IMAGE}${RSTUDIO_DOCKER_IMAGE}${PROXY_DOCKER_IMAGE}${WELDER_DOCKER_IMAGE}" ; then
+if grep -qF "gcr.io" <<< "${JUPYTER_DOCKER_IMAGE}${RSTUDIO_DOCKER_IMAGE}${PROXY_DOCKER_IMAGE}${WELDER_DOCKER_IMAGE}${JUPYTER_LAB_DOCKER_IMAGE}" ; then
   log 'Authorizing GCR...'
   DOCKER_COMPOSE="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /var:/var -w=/var cryptopants/docker-compose-gcr"
 else
@@ -285,6 +287,12 @@ if [ ! -z "$JUPYTER_DOCKER_IMAGE" ] ; then
   cat ${DOCKER_COMPOSE_FILES_DIRECTORY}/`basename ${JUPYTER_DOCKER_COMPOSE_GCE}`
 fi
 
+if [ ! -z "$JUPYTER_LAB_DOCKER_IMAGE" ] ; then
+  TOOL_SERVER_NAME=${JUPYTER_SERVER_NAME}
+  COMPOSE_FILES+=(-f ${DOCKER_COMPOSE_FILES_DIRECTORY}/`basename ${JUPYTER_LAB_DOCKER_COMPOSE_GCE}`)
+  cat ${DOCKER_COMPOSE_FILES_DIRECTORY}/`basename ${JUPYTER_LAB_DOCKER_COMPOSE_GCE}`
+fi
+
 if [ ! -z "$RSTUDIO_DOCKER_IMAGE" ] ; then
   TOOL_SERVER_NAME=${RSTUDIO_SERVER_NAME}
   COMPOSE_FILES+=(-f ${DOCKER_COMPOSE_FILES_DIRECTORY}/`basename ${RSTUDIO_DOCKER_COMPOSE}`)
@@ -344,7 +352,7 @@ fi
 STEP_TIMINGS+=($(date +%s))
 
 # Jupyter-specific setup, only do if Jupyter is installed
-if [ ! -z "$JUPYTER_DOCKER_IMAGE" ] ; then
+if [ ! -z "$JUPYTER_DOCKER_IMAGE" || ! -z "$JUPYTER_LAB_DOCKER_IMAGE" ] ; then
   # user package installation directory
   mkdir -p ${WORK_DIRECTORY}/packages
   chmod a+rwx ${WORK_DIRECTORY}/packages
