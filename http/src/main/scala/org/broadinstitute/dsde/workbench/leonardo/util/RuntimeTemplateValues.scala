@@ -207,7 +207,7 @@ object RuntimeTemplateValues {
   ): RuntimeTemplateValues = {
     val jupyterUserhome =
       config.runtimeImages
-        .find(x => x.imageType == Jupyter || x.imageType == JupyterLab)
+        .find(image => image.imageType == Jupyter || image.imageType == JupyterLab)
         .flatMap(_.homeDirectory.map(_.toString))
         .getOrElse("/home/jupyter")
     RuntimeTemplateValues(
@@ -264,7 +264,7 @@ object RuntimeTemplateValues {
       config.startUserScriptUri.map(_.asString).getOrElse(""),
       config.stagingBucketName
         .map(n => userStartScriptOutputUriPath(n, now.getOrElse(Instant.now)).toUri)
-        .getOrElse(""),
+        .getOrElse(""), // TODO: remove this complication
       (for {
         _ <- config.serviceAccountKey
         n <- config.initBucketName

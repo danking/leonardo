@@ -23,9 +23,11 @@ object ToolDAO {
         case JupyterService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
             jupyterDAO.isProxyAvailable(cloudContext, runtimeName)
-        // todo: can this just use the existing JupyterDAO instead of defining it's own?
         case JupyterLabService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
+            // For the endpoints that we care about, JupyterLab has the same underlying API as
+            // Jupyter, so there's no need to duplicate code by implementing a new JupyterLabDAO.
+            // Hence, we call JupyterDAO here.
             jupyterDAO.isProxyAvailable(cloudContext, runtimeName)
         case WelderService =>
           (cloudContext: CloudContext, runtimeName: RuntimeName) =>
