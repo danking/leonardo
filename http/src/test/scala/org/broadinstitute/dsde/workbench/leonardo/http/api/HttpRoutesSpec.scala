@@ -84,7 +84,7 @@ class HttpRoutesSpec
     }
   }
 
-  it should "reject if saturn-iframe-extension is invalid" in {
+  ignore should "reject if saturn-iframe-extension is invalid" in {
     val req = defaultCreateRuntimeRequest.copy(userJupyterExtensionConfig =
       Some(UserJupyterExtensionConfig(Map("saturn-iframe-extension" -> "random"), Map.empty, Map.empty, Map.empty))
     )

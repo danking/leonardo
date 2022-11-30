@@ -137,6 +137,7 @@ class BucketHelper[F[_]](
         .emits(
           List(
             clusterResourcesConfig.jupyterDockerCompose,
+            clusterResourcesConfig.jupyterLabDockerCompose,
             clusterResourcesConfig.rstudioDockerCompose,
             clusterResourcesConfig.proxyDockerCompose,
             clusterResourcesConfig.proxySiteConf,

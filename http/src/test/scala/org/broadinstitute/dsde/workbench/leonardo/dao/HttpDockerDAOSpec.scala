@@ -76,7 +76,7 @@ class HttpDockerDAOSpec extends AnyFlatSpec with Matchers with BeforeAndAfterAll
   Map(Jupyter -> jupyterImages, RStudio -> rstudioImages).foreach { case (tool, images) =>
     images.foreach { image =>
       it should s"detect tool=$tool for image $image" in withDockerDAO { dockerDAO =>
-        val response = IO.realTimeInstant.flatMap(n => dockerDAO.detectTool(image, None, n)).unsafeRunSync()
+        val response = IO.realTimeInstant.flatMap(n => dockerDAO.detectTool(image, Map.empty, None, n)).unsafeRunSync()
         response.imageType shouldBe tool
       }
     }
@@ -86,7 +86,7 @@ class HttpDockerDAOSpec extends AnyFlatSpec with Matchers with BeforeAndAfterAll
     val image = ContainerImage("us.gcr.io/anvil-gcr-public/anvil-rstudio-base", GCR) // non existent tag
     val res = for {
       ctx <- appContext.ask[AppContext]
-      response <- dockerDAO.detectTool(image, None, ctx.now).attempt
+      response <- dockerDAO.detectTool(image, Map.empty, None, ctx.now).attempt
     } yield response shouldBe Left(ImageParseException(ctx.traceId, image))
     res.unsafeRunSync()(cats.effect.unsafe.IORuntime.global)
   }
@@ -96,7 +96,7 @@ class HttpDockerDAOSpec extends AnyFlatSpec with Matchers with BeforeAndAfterAll
       val image = ContainerImage("us.gcr.io/broad-dsp-gcr-public/welder-server:latest", GCR) // not a supported tool
       val res = for {
         ctx <- appContext.ask[AppContext]
-        response <- dockerDAO.detectTool(image, None, ctx.now).attempt
+        response <- dockerDAO.detectTool(image, Map.empty, None, ctx.now).attempt
       } yield response shouldBe Left(InvalidImage(ctx.traceId, image, None))
       res.unsafeRunSync()(cats.effect.unsafe.IORuntime.global)
   }
@@ -106,7 +106,7 @@ class HttpDockerDAOSpec extends AnyFlatSpec with Matchers with BeforeAndAfterAll
       val image = ContainerImage("library/nginx:latest", DockerHub) // not a supported tool
       val res = for {
         ctx <- appContext.ask[AppContext]
-        response <- dockerDAO.detectTool(image, None, ctx.now).attempt
+        response <- dockerDAO.detectTool(image, Map.empty, None, ctx.now).attempt
       } yield response shouldBe Left(InvalidImage(ctx.traceId, image, None))
       res.unsafeRunSync()(cats.effect.unsafe.IORuntime.global)
   }
@@ -116,7 +116,7 @@ class HttpDockerDAOSpec extends AnyFlatSpec with Matchers with BeforeAndAfterAll
       val image = ContainerImage("ghcr.io/github/super-linter:latest", GHCR) // not a supported tool
       val res = for {
         ctx <- appContext.ask[AppContext]
-        response <- dockerDAO.detectTool(image, None, ctx.now).attempt
+        response <- dockerDAO.detectTool(image, Map.empty, None, ctx.now).attempt
       } yield response.isLeft shouldBe true
       res.unsafeRunSync()(cats.effect.unsafe.IORuntime.global)
   }
@@ -182,7 +182,7 @@ class HttpDockerDAOSpec extends AnyFlatSpec with Matchers with BeforeAndAfterAll
 
   it should s"detect tool RStudio for image rtitle/anvil-rstudio-base:0.0.1" in withDockerDAO { dockerDAO =>
     val image = ContainerImage("rtitle/anvil-rstudio-base:0.0.1", DockerHub)
-    val response = IO.realTimeInstant.flatMap(n => dockerDAO.detectTool(image, None, n)).unsafeRunSync()
+    val response = IO.realTimeInstant.flatMap(n => dockerDAO.detectTool(image, Map.empty, None, n)).unsafeRunSync()
     response.imageType shouldBe RStudio
   }
 }

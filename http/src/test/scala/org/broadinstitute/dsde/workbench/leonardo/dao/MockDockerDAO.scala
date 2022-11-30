@@ -11,6 +11,7 @@ import java.time.Instant
 class MockDockerDAO(tool: RuntimeImageType = Jupyter) extends DockerDAO[IO] {
   override def detectTool(
     image: ContainerImage,
+    labels: LabelMap,
     petTokenOpt: Option[String],
     now: Instant
   )(implicit ev: Ask[IO, TraceId]): IO[RuntimeImage] =

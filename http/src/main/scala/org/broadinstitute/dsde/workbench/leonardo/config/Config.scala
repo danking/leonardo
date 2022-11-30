@@ -178,6 +178,7 @@ object Config {
         config.as[RuntimeResource]("startupScript"),
         config.as[RuntimeResource]("shutdownScript"),
         config.as[RuntimeResource]("jupyterDockerCompose"),
+        config.as[RuntimeResource]("jupyterLabDockerCompose"),
         config.getAs[RuntimeResource]("gpuDockerCompose"),
         config.as[RuntimeResource]("rstudioDockerCompose"),
         config.as[RuntimeResource]("proxyDockerCompose"),

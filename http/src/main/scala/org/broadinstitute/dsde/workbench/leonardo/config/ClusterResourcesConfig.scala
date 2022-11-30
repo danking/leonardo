@@ -6,6 +6,7 @@ case class ClusterResourcesConfig(initScript: RuntimeResource,
                                   startupScript: RuntimeResource,
                                   shutdownScript: RuntimeResource,
                                   jupyterDockerCompose: RuntimeResource,
+                                  jupyterLabDockerCompose: RuntimeResource,
                                   gpuDockerCompose: Option[RuntimeResource], // only applies to GCE runtimes
                                   rstudioDockerCompose: RuntimeResource,
                                   proxyDockerCompose: RuntimeResource,
