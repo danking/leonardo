@@ -1,6 +1,11 @@
 package org.broadinstitute.dsde.workbench.leonardo.dao
 
-import org.broadinstitute.dsde.workbench.leonardo.RuntimeContainerServiceType.{JupyterLabService, JupyterService, RStudioService, WelderService}
+import org.broadinstitute.dsde.workbench.leonardo.RuntimeContainerServiceType.{
+  JupyterLabService,
+  JupyterService,
+  RStudioService,
+  WelderService
+}
 import org.broadinstitute.dsde.workbench.leonardo.{CloudContext, RuntimeContainerServiceType, RuntimeName}
 
 trait ToolDAO[F[_], A] {

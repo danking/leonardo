@@ -7,7 +7,7 @@ import org.broadinstitute.dsde.workbench.google2.{MachineTypeName, OperationName
 import org.broadinstitute.dsde.workbench.leonardo.RuntimeContainerServiceType.JupyterService
 import org.broadinstitute.dsde.workbench.leonardo.RuntimeImageType.{BootSource, Jupyter, JupyterLab, RStudio, Welder}
 import org.broadinstitute.dsde.workbench.leonardo.SamResourceId._
-import org.broadinstitute.dsde.workbench.model.google.{GcsBucketName, GcsPath, GoogleProject, parseGcsPath}
+import org.broadinstitute.dsde.workbench.model.google.{parseGcsPath, GcsBucketName, GcsPath, GoogleProject}
 import org.broadinstitute.dsde.workbench.model.{IP, TraceId, ValueObject, WorkbenchEmail}
 import org.http4s.Uri
 

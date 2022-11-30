@@ -105,7 +105,12 @@ class RuntimeServiceInterp[F[_]: Parallel](config: RuntimeServiceConfig,
               ) as None
             }
             _ <- context.span.traverse(s => F.delay(s.addAnnotation("Done Sam getAccessToken")))
-            runtimeImages <- getRuntimeImages(petToken, context.now, req.toolDockerImage, req.welderRegistry, req.labels)
+            runtimeImages <- getRuntimeImages(petToken,
+                                              context.now,
+                                              req.toolDockerImage,
+                                              req.welderRegistry,
+                                              req.labels
+            )
             _ <- context.span.traverse(s => F.delay(s.addAnnotation("Done get runtime images")))
             // .get here should be okay since this is from config, and it should always be defined; Ideally we probaly should use a different type for reading this config than RuntimeConfig
             bootDiskSize = config.gceConfig.runtimeConfigDefaults.bootDiskSize.get
